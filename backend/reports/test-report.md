@@ -9,18 +9,16 @@ Car Dealership Inventory System
 
 ## Current Test Summary
 
-Test Suites: 3 passed
-Tests: 13 passed
+Test Suites: 4 passed
+Tests: 23 passed
 Status: All tests passing
 
 ## Implemented Features
 
-### API Health Check
-- GET /
-
-### Authentication
+- API Health Check
 - User Registration
 - User Login
+- Vehicle Creation
 
 ## Current Test Cases
 
@@ -44,20 +42,33 @@ Status: All tests passing
 - Reject missing password
 - Reject invalid email format
 
-## TDD Progress
+### createVehicle.test.js
+- Successfully create a vehicle
+- Missing make
+- Missing model
+- Missing category
+- Missing price
+- Missing quantity
+- Invalid price
+- Invalid quantity
+- Missing JWT
+- Invalid JWT
 
-Completed TDD Cycles:
-- User Registration (RED → GREEN → REFACTOR)
-- User Login (RED → GREEN → REFACTOR)
+## Current TDD Progress
+
+Completed TDD Cycles
+- User Registration
+- User Login
+- Vehicle Creation
 
 ## Upcoming Features
 
-- JWT Authentication Middleware
-- Vehicle CRUD
-- Vehicle Search
+- Get All Vehicles
+- Search Vehicles
+- Update Vehicle
+- Delete Vehicle
 - Purchase Vehicle
 - Restock Vehicle
-- Role-based Authorization
 - Frontend Integration
 
 ## Notes
