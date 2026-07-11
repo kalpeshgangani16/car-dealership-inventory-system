@@ -23,7 +23,7 @@ const protect = async (req, res, next) => {
       req.user = decoded;
       next();
     } catch (err) {
-      throw new AppError('Not authorized, token invalid', 401);
+      throw new AppError(`Not authorized, token invalid: ${err.message}`, 401);
     }
   } catch (error) {
     next(error);

@@ -2,6 +2,18 @@ const Vehicle = require('../models/Vehicle');
 const { validateVehicleInput } = require('../utils/vehicleValidation');
 
 /**
+ * Format Mongoose vehicle document properties to match standard response API contract
+ */
+const formatVehicleResponse = (vehicle) => ({
+  _id: vehicle._id.toString(),
+  make: vehicle.make,
+  model: vehicle.model,
+  category: vehicle.category,
+  price: vehicle.price,
+  quantity: vehicle.quantity
+});
+
+/**
  * Handles creation and validation of new vehicles in the inventory
  */
 const createVehicle = async (vehicleData) => {
@@ -19,14 +31,7 @@ const createVehicle = async (vehicleData) => {
 
   return {
     success: true,
-    vehicle: {
-      _id: vehicle._id.toString(),
-      make: vehicle.make,
-      model: vehicle.model,
-      category: vehicle.category,
-      price: vehicle.price,
-      quantity: vehicle.quantity
-    }
+    vehicle: formatVehicleResponse(vehicle)
   };
 };
 
@@ -38,14 +43,7 @@ const getVehicles = async () => {
   return {
     success: true,
     count: vehicles.length,
-    vehicles: vehicles.map(vehicle => ({
-      _id: vehicle._id.toString(),
-      make: vehicle.make,
-      model: vehicle.model,
-      category: vehicle.category,
-      price: vehicle.price,
-      quantity: vehicle.quantity
-    }))
+    vehicles: vehicles.map(formatVehicleResponse)
   };
 };
 

@@ -51,12 +51,12 @@ describe('Get Vehicles Integration Tests (GET /api/vehicles)', () => {
    * returns a 200 OK status, success flag, correct count of items, and the array of seeded vehicles.
    */
   it('should successfully fetch all vehicles from the database', async () => {
-    // Seed test vehicles
-    await Vehicle.create([
-      { make: 'Toyota', model: 'Fortuner', category: 'SUV', price: 4200000, quantity: 5 },
-      { make: 'Honda', model: 'City', category: 'Sedan', price: 1500000, quantity: 10 },
-      { make: 'Tata', model: 'Nexon', category: 'SUV', price: 1200000, quantity: 8 }
-    ]);
+    // Seed test vehicles sequentially with a delay to ensure distinct createdAt timestamps
+    await Vehicle.create({ make: 'Toyota', model: 'Fortuner', category: 'SUV', price: 4200000, quantity: 5 });
+    await new Promise(resolve => setTimeout(resolve, 50));
+    await Vehicle.create({ make: 'Honda', model: 'City', category: 'Sedan', price: 1500000, quantity: 10 });
+    await new Promise(resolve => setTimeout(resolve, 50));
+    await Vehicle.create({ make: 'Tata', model: 'Nexon', category: 'SUV', price: 1200000, quantity: 8 });
 
     const response = await request(app)
       .get('/api/vehicles')
@@ -67,9 +67,9 @@ describe('Get Vehicles Integration Tests (GET /api/vehicles)', () => {
       success: true,
       count: 3,
       vehicles: [
-        expect.objectContaining({ make: 'Toyota', model: 'Fortuner', category: 'SUV', price: 4200000, quantity: 5 }),
+        expect.objectContaining({ make: 'Tata', model: 'Nexon', category: 'SUV', price: 1200000, quantity: 8 }),
         expect.objectContaining({ make: 'Honda', model: 'City', category: 'Sedan', price: 1500000, quantity: 10 }),
-        expect.objectContaining({ make: 'Tata', model: 'Nexon', category: 'SUV', price: 1200000, quantity: 8 })
+        expect.objectContaining({ make: 'Toyota', model: 'Fortuner', category: 'SUV', price: 4200000, quantity: 5 })
       ]
     });
   });
