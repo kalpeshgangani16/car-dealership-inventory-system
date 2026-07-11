@@ -72,11 +72,24 @@ const purchaseVehicle = async (req, res, next) => {
   }
 };
 
+/**
+ * Handle vehicle restock request
+ */
+const restockVehicle = async (req, res, next) => {
+  try {
+    const result = await vehicleService.restockVehicle(req.params.id, req.body);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createVehicle,
   getVehicles,
   searchVehicles,
   updateVehicle,
   deleteVehicle,
-  purchaseVehicle
+  purchaseVehicle,
+  restockVehicle
 };

@@ -206,11 +206,48 @@ const purchaseVehicle = async (id, purchaseData) => {
   };
 };
 
+/**
+ * Restock a vehicle (increasing stock quantity)
+ */
+const restockVehicle = async (id, restockData) => {
+  // 1. Validate MongoDB ObjectId format using utility helper
+  validateVehicleId(id);
+
+  const { quantity } = restockData;
+
+  // 2. Validate missing restock quantity
+  if (quantity === undefined || quantity === null) {
+    throw new AppError('Restock quantity is required', 400);
+  }
+
+  // 3. Validate type and integer bounds
+  if (typeof quantity !== 'number' || quantity < 0) {
+    throw new AppError('Quantity must be greater than 0', 400);
+  }
+  if (quantity === 0) {
+    throw new AppError('Quantity cannot be 0', 400);
+  }
+
+  // 4. Find the vehicle or throw 404
+  const vehicle = await getVehicleOrThrow(id);
+
+  // 5. Perform restock
+  vehicle.quantity += quantity;
+  await vehicle.save();
+
+  return {
+    success: true,
+    message: 'Vehicle restocked successfully',
+    vehicle: formatVehicleResponse(vehicle)
+  };
+};
+
 module.exports = {
   createVehicle,
   getVehicles,
   searchVehicles,
   updateVehicle,
   deleteVehicle,
-  purchaseVehicle
+  purchaseVehicle,
+  restockVehicle
 };

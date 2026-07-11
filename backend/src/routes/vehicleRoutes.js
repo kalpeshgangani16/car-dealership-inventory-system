@@ -45,4 +45,11 @@ router.delete('/:id', protect, vehicleController.deleteVehicle);
  */
 router.patch('/:id/purchase', protect, vehicleController.purchaseVehicle);
 
+/**
+ * @route   PATCH /api/vehicles/:id/restock
+ * @desc    Restock an existing vehicle
+ * @access  Private
+ */
+router.patch('/:id/restock', protect, vehicleController.restockVehicle);
+
 module.exports = router;
