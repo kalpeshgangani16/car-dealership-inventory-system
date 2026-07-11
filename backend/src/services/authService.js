@@ -70,6 +70,58 @@ const register = async (userData) => {
   };
 };
 
+/**
+ * Validates login parameters and format
+ */
+const validateLoginInput = (email, password) => {
+  if (!email || !password) {
+    throw new AppError('Email and password are required', 400);
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new AppError('Invalid email format', 400);
+  }
+};
+
+/**
+ * Handles user login verification and token generation
+ */
+const login = async (loginData) => {
+  const { email, password } = loginData;
+
+  // 1. Validate inputs
+  validateLoginInput(email, password);
+
+  // 2. Find user by email
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    throw new AppError('Invalid email or password', 401);
+  }
+
+  // 3. Compare passwords
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new AppError('Invalid email or password', 401);
+  }
+
+  // 4. Generate token
+  const token = generateToken(user);
+
+  return {
+    success: true,
+    message: 'Login successful',
+    token,
+    user: {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role
+    }
+  };
+};
+
 module.exports = {
-  register
+  register,
+  login
 };
