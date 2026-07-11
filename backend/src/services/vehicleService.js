@@ -30,6 +30,26 @@ const createVehicle = async (vehicleData) => {
   };
 };
 
+/**
+ * Retrieves all vehicles stored in the database sorted by newest first
+ */
+const getVehicles = async () => {
+  const vehicles = await Vehicle.find({}).sort({ createdAt: -1 });
+  return {
+    success: true,
+    count: vehicles.length,
+    vehicles: vehicles.map(vehicle => ({
+      _id: vehicle._id.toString(),
+      make: vehicle.make,
+      model: vehicle.model,
+      category: vehicle.category,
+      price: vehicle.price,
+      quantity: vehicle.quantity
+    }))
+  };
+};
+
 module.exports = {
-  createVehicle
+  createVehicle,
+  getVehicles
 };

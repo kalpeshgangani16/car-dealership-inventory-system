@@ -10,4 +10,11 @@ const { protect } = require('../middleware/authMiddleware');
  */
 router.post('/', protect, vehicleController.createVehicle);
 
+/**
+ * @route   GET /api/vehicles
+ * @desc    Get all vehicles sorted by newest first
+ * @access  Private
+ */
+router.get('/', protect, vehicleController.getVehicles);
+
 module.exports = router;
