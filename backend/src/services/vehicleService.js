@@ -5,7 +5,9 @@ const {
   validateVehicleId,
   validateVehicleInput,
   validatePrice,
-  validateQuantity
+  validateQuantity,
+  validatePurchaseQuantity,
+  validateStockAvailability
 } = require('../utils/vehicleValidation');
 
 /**
@@ -19,6 +21,17 @@ const formatVehicleResponse = (vehicle) => ({
   price: vehicle.price,
   quantity: vehicle.quantity
 });
+
+/**
+ * Looks up a vehicle by ID and throws a 404 error if not found
+ */
+const getVehicleOrThrow = async (id) => {
+  const vehicle = await Vehicle.findById(id);
+  if (!vehicle) {
+    throw new AppError('Vehicle not found', 404);
+  }
+  return vehicle;
+};
 
 /**
  * Dynamically builds a MongoDB query object from search parameters
@@ -126,11 +139,8 @@ const updateVehicle = async (id, updateData) => {
     validateQuantity(quantity);
   }
 
-  // 4. Find the vehicle
-  const vehicle = await Vehicle.findById(id);
-  if (!vehicle) {
-    throw new AppError('Vehicle not found', 404);
-  }
+  // 4. Find the vehicle or throw 404
+  const vehicle = await getVehicleOrThrow(id);
 
   // 5. Apply partial updates dynamically
   const allowedUpdates = ['make', 'model', 'category', 'price', 'quantity'];
@@ -176,36 +186,16 @@ const purchaseVehicle = async (id, purchaseData) => {
 
   const { quantity } = purchaseData;
 
-  // 2. Validate missing purchase quantity
-  if (quantity === undefined || quantity === null) {
-    throw new AppError('Purchase quantity is required', 400);
-  }
+  // 2. Validate purchase quantity
+  validatePurchaseQuantity(quantity);
 
-  // 3. Validate type and integer bounds
-  if (typeof quantity !== 'number' || quantity < 0) {
-    throw new AppError('Quantity must be greater than 0', 400);
-  }
-  if (quantity === 0) {
-    throw new AppError('Quantity cannot be 0', 400);
-  }
+  // 3. Find the vehicle or throw 404
+  const vehicle = await getVehicleOrThrow(id);
 
-  // 4. Find the vehicle
-  const vehicle = await Vehicle.findById(id);
-  if (!vehicle) {
-    throw new AppError('Vehicle not found', 404);
-  }
+  // 4. Validate stock availability using helper
+  validateStockAvailability(vehicle.quantity, quantity);
 
-  // 5. Validate out of stock
-  if (vehicle.quantity === 0) {
-    throw new AppError('Vehicle is out of stock', 400);
-  }
-
-  // 6. Validate stock availability
-  if (quantity > vehicle.quantity) {
-    throw new AppError('Purchase quantity exceeds available stock', 400);
-  }
-
-  // 7. Perform purchase
+  // 5. Perform purchase
   vehicle.quantity -= quantity;
   await vehicle.save();
 

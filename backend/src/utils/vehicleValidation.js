@@ -29,6 +29,33 @@ const validateQuantity = (quantity) => {
 };
 
 /**
+ * Validates purchase quantity (must be a positive number greater than 0)
+ */
+const validatePurchaseQuantity = (quantity) => {
+  if (quantity === undefined || quantity === null) {
+    throw new AppError('Purchase quantity is required', 400);
+  }
+  if (typeof quantity !== 'number' || quantity < 0) {
+    throw new AppError('Quantity must be greater than 0', 400);
+  }
+  if (quantity === 0) {
+    throw new AppError('Quantity cannot be 0', 400);
+  }
+};
+
+/**
+ * Validates inventory stock availability for purchase
+ */
+const validateStockAvailability = (availableQuantity, purchaseQuantity) => {
+  if (availableQuantity === 0) {
+    throw new AppError('Vehicle is out of stock', 400);
+  }
+  if (purchaseQuantity > availableQuantity) {
+    throw new AppError('Purchase quantity exceeds available stock', 400);
+  }
+};
+
+/**
  * Validates inputs for vehicle creation
  */
 const validateVehicleInput = (vehicleData) => {
@@ -60,5 +87,7 @@ module.exports = {
   validateVehicleId,
   validateVehicleInput,
   validatePrice,
-  validateQuantity
+  validateQuantity,
+  validatePurchaseQuantity,
+  validateStockAvailability
 };
