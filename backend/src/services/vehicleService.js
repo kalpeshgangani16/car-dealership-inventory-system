@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const Vehicle = require('../models/Vehicle');
+const AppError = require('../utils/AppError');
 const { validateVehicleInput } = require('../utils/vehicleValidation');
 
 /**
@@ -97,8 +99,58 @@ const searchVehicles = async (queryParams) => {
   };
 };
 
+/**
+ * Performs dynamic field updates on a vehicle document
+ */
+const updateVehicle = async (id, updateData) => {
+  // 1. Validate MongoDB ObjectId format
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new AppError('Invalid vehicle ID format', 400);
+  }
+
+  // 2. Validate empty body
+  if (!updateData || Object.keys(updateData).length === 0) {
+    throw new AppError('Update data cannot be empty', 400);
+  }
+
+  const { make, model, category, price, quantity } = updateData;
+
+  // 3. Validate numerical bounds if provided
+  if (price !== undefined) {
+    if (typeof price !== 'number' || price < 0) {
+      throw new AppError('Price must be greater than or equal to 0', 400);
+    }
+  }
+  if (quantity !== undefined) {
+    if (typeof quantity !== 'number' || quantity < 0) {
+      throw new AppError('Quantity must be greater than or equal to 0', 400);
+    }
+  }
+
+  // 4. Find the vehicle
+  const vehicle = await Vehicle.findById(id);
+  if (!vehicle) {
+    throw new AppError('Vehicle not found', 404);
+  }
+
+  // 5. Apply partial updates
+  if (make !== undefined) vehicle.make = make;
+  if (model !== undefined) vehicle.model = model;
+  if (category !== undefined) vehicle.category = category;
+  if (price !== undefined) vehicle.price = price;
+  if (quantity !== undefined) vehicle.quantity = quantity;
+
+  await vehicle.save();
+
+  return {
+    success: true,
+    vehicle: formatVehicleResponse(vehicle)
+  };
+};
+
 module.exports = {
   createVehicle,
   getVehicles,
-  searchVehicles
+  searchVehicles,
+  updateVehicle
 };

@@ -24,4 +24,11 @@ router.get('/', protect, vehicleController.getVehicles);
  */
 router.get('/search', protect, vehicleController.searchVehicles);
 
+/**
+ * @route   PUT /api/vehicles/:id
+ * @desc    Update an existing vehicle
+ * @access  Private
+ */
+router.put('/:id', protect, vehicleController.updateVehicle);
+
 module.exports = router;
