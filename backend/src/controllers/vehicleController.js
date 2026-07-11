@@ -60,10 +60,23 @@ const deleteVehicle = async (req, res, next) => {
   }
 };
 
+/**
+ * Handle vehicle purchase request
+ */
+const purchaseVehicle = async (req, res, next) => {
+  try {
+    const result = await vehicleService.purchaseVehicle(req.params.id, req.body);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createVehicle,
   getVehicles,
   searchVehicles,
   updateVehicle,
-  deleteVehicle
+  deleteVehicle,
+  purchaseVehicle
 };

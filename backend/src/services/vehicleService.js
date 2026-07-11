@@ -167,10 +167,60 @@ const deleteVehicle = async (id) => {
   };
 };
 
+/**
+ * Purchase a vehicle (reducing stock quantity)
+ */
+const purchaseVehicle = async (id, purchaseData) => {
+  // 1. Validate MongoDB ObjectId format using utility helper
+  validateVehicleId(id);
+
+  const { quantity } = purchaseData;
+
+  // 2. Validate missing purchase quantity
+  if (quantity === undefined || quantity === null) {
+    throw new AppError('Purchase quantity is required', 400);
+  }
+
+  // 3. Validate type and integer bounds
+  if (typeof quantity !== 'number' || quantity < 0) {
+    throw new AppError('Quantity must be greater than 0', 400);
+  }
+  if (quantity === 0) {
+    throw new AppError('Quantity cannot be 0', 400);
+  }
+
+  // 4. Find the vehicle
+  const vehicle = await Vehicle.findById(id);
+  if (!vehicle) {
+    throw new AppError('Vehicle not found', 404);
+  }
+
+  // 5. Validate out of stock
+  if (vehicle.quantity === 0) {
+    throw new AppError('Vehicle is out of stock', 400);
+  }
+
+  // 6. Validate stock availability
+  if (quantity > vehicle.quantity) {
+    throw new AppError('Purchase quantity exceeds available stock', 400);
+  }
+
+  // 7. Perform purchase
+  vehicle.quantity -= quantity;
+  await vehicle.save();
+
+  return {
+    success: true,
+    message: 'Vehicle purchased successfully',
+    vehicle: formatVehicleResponse(vehicle)
+  };
+};
+
 module.exports = {
   createVehicle,
   getVehicles,
   searchVehicles,
   updateVehicle,
-  deleteVehicle
+  deleteVehicle,
+  purchaseVehicle
 };

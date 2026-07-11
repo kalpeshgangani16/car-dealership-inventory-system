@@ -38,4 +38,11 @@ router.put('/:id', protect, vehicleController.updateVehicle);
  */
 router.delete('/:id', protect, vehicleController.deleteVehicle);
 
+/**
+ * @route   PATCH /api/vehicles/:id/purchase
+ * @desc    Purchase an existing vehicle
+ * @access  Private
+ */
+router.patch('/:id/purchase', protect, vehicleController.purchaseVehicle);
+
 module.exports = router;
