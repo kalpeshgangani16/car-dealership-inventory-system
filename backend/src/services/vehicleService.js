@@ -14,6 +14,40 @@ const formatVehicleResponse = (vehicle) => ({
 });
 
 /**
+ * Dynamically builds a MongoDB query object from search parameters
+ */
+const buildSearchQuery = (queryParams) => {
+  const { make, model, category, minPrice, maxPrice } = queryParams;
+  const query = {};
+
+  if (make) {
+    query.make = { $regex: new RegExp(make, 'i') };
+  }
+  if (model) {
+    query.model = { $regex: new RegExp(model, 'i') };
+  }
+  if (category) {
+    query.category = { $regex: new RegExp(category, 'i') };
+  }
+
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    query.price = {};
+    if (minPrice !== undefined && minPrice !== '') {
+      query.price.$gte = Number(minPrice);
+    }
+    if (maxPrice !== undefined && maxPrice !== '') {
+      query.price.$lte = Number(maxPrice);
+    }
+    // Clean up empty price object if neither minPrice nor maxPrice was successfully added
+    if (Object.keys(query.price).length === 0) {
+      delete query.price;
+    }
+  }
+
+  return query;
+};
+
+/**
  * Handles creation and validation of new vehicles in the inventory
  */
 const createVehicle = async (vehicleData) => {
@@ -51,28 +85,8 @@ const getVehicles = async () => {
  * Dynamically queries vehicles by make, model, category, and price range
  */
 const searchVehicles = async (queryParams) => {
-  const { make, model, category, minPrice, maxPrice } = queryParams;
-  const query = {};
-
-  if (make) {
-    query.make = { $regex: new RegExp(make, 'i') };
-  }
-  if (model) {
-    query.model = { $regex: new RegExp(model, 'i') };
-  }
-  if (category) {
-    query.category = { $regex: new RegExp(category, 'i') };
-  }
-
-  if (minPrice !== undefined || maxPrice !== undefined) {
-    query.price = {};
-    if (minPrice !== undefined && minPrice !== '') {
-      query.price.$gte = Number(minPrice);
-    }
-    if (maxPrice !== undefined && maxPrice !== '') {
-      query.price.$lte = Number(maxPrice);
-    }
-  }
+  // Extract MongoDB query filters using utility helper
+  const query = buildSearchQuery(queryParams);
 
   const vehicles = await Vehicle.find(query).sort({ createdAt: -1 });
 
