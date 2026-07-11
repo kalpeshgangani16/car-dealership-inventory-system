@@ -1,4 +1,14 @@
+const mongoose = require('mongoose');
 const AppError = require('./AppError');
+
+/**
+ * Validates MongoDB ObjectId format
+ */
+const validateVehicleId = (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new AppError('Invalid vehicle ID format', 400);
+  }
+};
 
 /**
  * Validates price format and positive bounds constraints
@@ -47,6 +57,7 @@ const validateVehicleInput = (vehicleData) => {
 };
 
 module.exports = {
+  validateVehicleId,
   validateVehicleInput,
   validatePrice,
   validateQuantity

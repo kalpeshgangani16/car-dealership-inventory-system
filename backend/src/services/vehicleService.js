@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Vehicle = require('../models/Vehicle');
 const AppError = require('../utils/AppError');
 const {
+  validateVehicleId,
   validateVehicleInput,
   validatePrice,
   validateQuantity
@@ -107,10 +108,8 @@ const searchVehicles = async (queryParams) => {
  * Performs dynamic field updates on a vehicle document
  */
 const updateVehicle = async (id, updateData) => {
-  // 1. Validate MongoDB ObjectId format
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new AppError('Invalid vehicle ID format', 400);
-  }
+  // 1. Validate MongoDB ObjectId format using utility helper
+  validateVehicleId(id);
 
   // 2. Validate empty body
   if (!updateData || Object.keys(updateData).length === 0) {
@@ -153,10 +152,8 @@ const updateVehicle = async (id, updateData) => {
  * Delete a vehicle by its ID
  */
 const deleteVehicle = async (id) => {
-  // 1. Validate MongoDB ObjectId format
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new AppError('Invalid vehicle ID format', 400);
-  }
+  // 1. Validate MongoDB ObjectId format using utility helper
+  validateVehicleId(id);
 
   // 2. Find and delete the vehicle
   const vehicle = await Vehicle.findByIdAndDelete(id);
