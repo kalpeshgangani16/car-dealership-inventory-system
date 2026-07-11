@@ -70,7 +70,8 @@ describe('Delete Vehicle Integration Tests (DELETE /api/vehicles/:id)', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      success: true
+      success: true,
+      message: 'Vehicle deleted successfully'
     });
 
     // Verify database removal

@@ -149,9 +149,31 @@ const updateVehicle = async (id, updateData) => {
   };
 };
 
+/**
+ * Delete a vehicle by its ID
+ */
+const deleteVehicle = async (id) => {
+  // 1. Validate MongoDB ObjectId format
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new AppError('Invalid vehicle ID format', 400);
+  }
+
+  // 2. Find and delete the vehicle
+  const vehicle = await Vehicle.findByIdAndDelete(id);
+  if (!vehicle) {
+    throw new AppError('Vehicle not found', 404);
+  }
+
+  return {
+    success: true,
+    message: 'Vehicle deleted successfully'
+  };
+};
+
 module.exports = {
   createVehicle,
   getVehicles,
   searchVehicles,
-  updateVehicle
+  updateVehicle,
+  deleteVehicle
 };

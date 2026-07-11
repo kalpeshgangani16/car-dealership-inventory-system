@@ -31,4 +31,11 @@ router.get('/search', protect, vehicleController.searchVehicles);
  */
 router.put('/:id', protect, vehicleController.updateVehicle);
 
+/**
+ * @route   DELETE /api/vehicles/:id
+ * @desc    Delete an existing vehicle
+ * @access  Private
+ */
+router.delete('/:id', protect, vehicleController.deleteVehicle);
+
 module.exports = router;
