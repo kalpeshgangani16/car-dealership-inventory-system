@@ -9,8 +9,8 @@ Car Dealership Inventory System
 
 ## Current Test Summary
 
-- Test Suites: 6 passed, 6 total
-- Tests: 36 passed, 36 total
+- Test Suites: 8 passed, 8 total
+- Tests: 50 passed, 50 total
 - Snapshots: 0 total
 - Status: All tests passing
 
@@ -22,6 +22,8 @@ Car Dealership Inventory System
 - Vehicle Creation
 - Get All Vehicles
 - Vehicle Search
+- Vehicle Update
+- Vehicle Delete
 
 ## Current Test Cases
 
@@ -74,26 +76,51 @@ Car Dealership Inventory System
 - Missing JWT
 - Invalid JWT
 
+### updateVehicle.test.js
+- Successfully update all fields of a vehicle
+- Successfully perform partial updates on selected fields
+- Return 404 status if the vehicle ID does not exist
+- Return 400 status if the vehicle ID is not a valid MongoDB ObjectId
+- Return 400 status if the updated price is negative
+- Return 400 status if the updated quantity is negative
+- Return 400 status if the request body is empty
+- Return 401 status if the JWT is missing
+- Return 401 status if the JWT is invalid or malformed
+
+### deleteVehicle.test.js
+- Successfully delete a vehicle
+- Vehicle not found
+- Invalid MongoDB ObjectId
+- Missing JWT token
+- Invalid JWT token
+
 ## Current TDD Progress
 
-Completed TDD Cycles:
--  User Registration (RED → GREEN → REFACTOR)
--  User Login (RED → GREEN → REFACTOR)
--  Vehicle Creation (RED → GREEN → REFACTOR)
--  Get All Vehicles (RED → GREEN → REFACTOR)
--  Vehicle Search (RED → GREEN → REFACTOR)
+Completed TDD Cycles
+
+✅ User Registration (RED → GREEN → REFACTOR)
+
+✅ User Login (RED → GREEN → REFACTOR)
+
+✅ Vehicle Creation (RED → GREEN → REFACTOR)
+
+✅ Get All Vehicles (RED → GREEN → REFACTOR)
+
+✅ Vehicle Search (RED → GREEN → REFACTOR)
+
+✅ Vehicle Update (RED → GREEN → REFACTOR)
+
+✅ Vehicle Delete (RED → GREEN → REFACTOR)
 
 ## Upcoming Features
 
 ### Remaining Backend Features
-- Update Vehicle
-- Delete Vehicle (Admin)
 - Purchase Vehicle
-- Restock Vehicle (Admin)
+- Restock Vehicle
 
 ### Remaining Frontend
 - React Frontend Integration
 
 ## Notes
 
-This report is updated after every completed TDD cycle and reflects the latest backend test coverage, implemented features, and project progress.
+This report is updated after each completed TDD cycle and reflects the current backend test coverage, implemented features, and project progress.
