@@ -2,8 +2,8 @@
  * Centralized error handling middleware
  */
 const errorHandler = (err, req, res, next) => {
-  // If the status code is still 200, change it to 500
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  // Use err.statusCode if present, otherwise default to response status or 500
+  const statusCode = err.statusCode || (res.statusCode === 200 ? 500 : res.statusCode);
   
   res.status(statusCode).json({
     message: err.message,

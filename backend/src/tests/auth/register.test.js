@@ -13,17 +13,17 @@ describe('User Registration Integration Tests (POST /api/auth/register)', () => 
       throw new Error('MONGO_URI environment variable is missing in the .env file.');
     }
     await mongoose.connect(mongoURI);
-  });
+  }, 30000);
 
   // Disconnect from MongoDB database after all tests complete
   afterAll(async () => {
     await mongoose.connection.close();
-  });
+  }, 30000);
 
   // Clear User collection before each test to maintain state isolation
   beforeEach(async () => {
     await User.deleteMany({});
-  });
+  }, 30000);
 
   /**
    * Test Case A: Successful registration

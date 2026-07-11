@@ -1,55 +1,62 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const AppError = require('../utils/AppError');
 
 /**
- * Handle validation, user creation, hashing, and JWT generation
+ * Validates registration parameters and email structure format
+ */
+const validateRegistrationInput = (name, email, password) => {
+  if (!name || !email || !password) {
+    throw new AppError('Name, email, and password are required', 400);
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new AppError('Invalid email format', 400);
+  }
+};
+
+/**
+ * Generates a signed JWT session token
+ */
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET || 'supersecret',
+    { expiresIn: '30d' }
+  );
+};
+
+/**
+ * Handles user validation, duplicate verification, database persistence, and session setup
  */
 const register = async (userData) => {
   const { name, email, password } = userData;
 
-  // 1. Validate required fields
-  if (!name || !email || !password) {
-    const error = new Error('Name, email, and password are required');
-    error.statusCode = 400;
-    throw error;
-  }
+  // 1. Perform validation checks
+  validateRegistrationInput(name, email, password);
 
-  // 2. Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    const error = new Error('Invalid email format');
-    error.statusCode = 400;
-    throw error;
-  }
-
-  // 3. Check duplicate email
-  const existingUser = await User.findOne({ email: email.toLowerCase() });
+  // 2. Enforce email uniqueness check
+  const normalizedEmail = email.toLowerCase();
+  const existingUser = await User.findOne({ email: normalizedEmail });
   if (existingUser) {
-    const error = new Error('Email is already registered');
-    error.statusCode = 409;
-    throw error;
+    throw new AppError('Email is already registered', 409);
   }
 
-  // 4. Hash password
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  // 3. Hash secret credentials safely
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-  // 5. Create user in MongoDB
+  // 4. Save user document to MongoDB
   const newUser = await User.create({
     name,
-    email: email.toLowerCase(),
+    email: normalizedEmail,
     password: hashedPassword
   });
 
-  // 6. Generate JWT token
-  const token = jwt.sign(
-    { id: newUser._id, role: newUser.role },
-    process.env.JWT_SECRET || 'supersecret',
-    { expiresIn: '30d' }
-  );
+  // 5. Build JWT security token
+  const token = generateToken(newUser);
 
-  // Return success payload structure
   return {
     success: true,
     message: 'User registered successfully',
