@@ -9,10 +9,8 @@ Car Dealership Inventory System
 
 ## Current Test Summary
 
-Test Suites: 5 passed, 5 total
-Tests: 27 passed, 27 total
-Snapshots: 0 total
-Status: All tests passing
+- Test Suites: 6 passed
+- Tests: 36 passed
 
 ## Implemented Features
 
@@ -21,6 +19,7 @@ Status: All tests passing
 - User Login
 - Vehicle Creation
 - Get All Vehicles
+- Vehicle Search
 
 ## Current Test Cases
 
@@ -62,6 +61,17 @@ Status: All tests passing
 - Request without JWT
 - Request with invalid JWT
 
+### searchVehicles.test.js
+- Successfully search vehicles by make
+- Successfully search vehicles by model
+- Successfully search vehicles by category
+- Successfully filter vehicles above or equal to a minimum price
+- Successfully filter vehicles below or equal to a maximum price
+- Successfully filter vehicles within a specific price range
+- Return count 0 and an empty array when no vehicles match query parameters
+- Missing JWT
+- Invalid JWT
+
 ## Current TDD Progress
 
 Completed TDD Cycles
@@ -69,6 +79,7 @@ Completed TDD Cycles
 - User Login
 - Vehicle Creation
 - Get All Vehicles
+- Vehicle Search (GREEN)
 
 ## Upcoming Features
 

@@ -24,7 +24,20 @@ const getVehicles = async (req, res, next) => {
   }
 };
 
+/**
+ * Handle vehicle search request
+ */
+const searchVehicles = async (req, res, next) => {
+  try {
+    const result = await vehicleService.searchVehicles(req.query);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createVehicle,
-  getVehicles
+  getVehicles,
+  searchVehicles
 };

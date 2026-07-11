@@ -17,4 +17,11 @@ router.post('/', protect, vehicleController.createVehicle);
  */
 router.get('/', protect, vehicleController.getVehicles);
 
+/**
+ * @route   GET /api/vehicles/search
+ * @desc    Search vehicles dynamically by query parameters
+ * @access  Private
+ */
+router.get('/search', protect, vehicleController.searchVehicles);
+
 module.exports = router;

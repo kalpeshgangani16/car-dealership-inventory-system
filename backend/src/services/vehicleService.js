@@ -47,7 +47,44 @@ const getVehicles = async () => {
   };
 };
 
+/**
+ * Dynamically queries vehicles by make, model, category, and price range
+ */
+const searchVehicles = async (queryParams) => {
+  const { make, model, category, minPrice, maxPrice } = queryParams;
+  const query = {};
+
+  if (make) {
+    query.make = { $regex: new RegExp(make, 'i') };
+  }
+  if (model) {
+    query.model = { $regex: new RegExp(model, 'i') };
+  }
+  if (category) {
+    query.category = { $regex: new RegExp(category, 'i') };
+  }
+
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    query.price = {};
+    if (minPrice !== undefined && minPrice !== '') {
+      query.price.$gte = Number(minPrice);
+    }
+    if (maxPrice !== undefined && maxPrice !== '') {
+      query.price.$lte = Number(maxPrice);
+    }
+  }
+
+  const vehicles = await Vehicle.find(query).sort({ createdAt: -1 });
+
+  return {
+    success: true,
+    count: vehicles.length,
+    vehicles: vehicles.map(formatVehicleResponse)
+  };
+};
+
 module.exports = {
   createVehicle,
-  getVehicles
+  getVehicles,
+  searchVehicles
 };
