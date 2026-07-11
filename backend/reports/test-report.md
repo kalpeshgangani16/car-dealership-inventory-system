@@ -9,8 +9,9 @@ Car Dealership Inventory System
 
 ## Current Test Summary
 
-Test Suites: 5 passed
-Tests: 27 passed
+Test Suites: 5 passed, 5 total
+Tests: 27 passed, 27 total
+Snapshots: 0 total
 Status: All tests passing
 
 ## Implemented Features
