@@ -1,6 +1,24 @@
 const AppError = require('./AppError');
 
 /**
+ * Validates price format and positive bounds constraints
+ */
+const validatePrice = (price) => {
+  if (typeof price !== 'number' || price < 0) {
+    throw new AppError('Price must be greater than or equal to 0', 400);
+  }
+};
+
+/**
+ * Validates quantity format and positive bounds constraints
+ */
+const validateQuantity = (quantity) => {
+  if (typeof quantity !== 'number' || quantity < 0) {
+    throw new AppError('Quantity must be greater than or equal to 0', 400);
+  }
+};
+
+/**
  * Validates inputs for vehicle creation
  */
 const validateVehicleInput = (vehicleData) => {
@@ -23,15 +41,13 @@ const validateVehicleInput = (vehicleData) => {
     throw new AppError('Quantity is required', 400);
   }
 
-  // 2. Validate format constraints (negative numbers or invalid data types)
-  if (typeof price !== 'number' || price < 0) {
-    throw new AppError('Price must be greater than or equal to 0', 400);
-  }
-  if (typeof quantity !== 'number' || quantity < 0) {
-    throw new AppError('Quantity must be greater than or equal to 0', 400);
-  }
+  // 2. Validate format constraints using extracted helpers
+  validatePrice(price);
+  validateQuantity(quantity);
 };
 
 module.exports = {
-  validateVehicleInput
+  validateVehicleInput,
+  validatePrice,
+  validateQuantity
 };

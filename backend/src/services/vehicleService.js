@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const Vehicle = require('../models/Vehicle');
 const AppError = require('../utils/AppError');
-const { validateVehicleInput } = require('../utils/vehicleValidation');
+const {
+  validateVehicleInput,
+  validatePrice,
+  validateQuantity
+} = require('../utils/vehicleValidation');
 
 /**
  * Format Mongoose vehicle document properties to match standard response API contract
@@ -113,18 +117,14 @@ const updateVehicle = async (id, updateData) => {
     throw new AppError('Update data cannot be empty', 400);
   }
 
-  const { make, model, category, price, quantity } = updateData;
+  const { price, quantity } = updateData;
 
-  // 3. Validate numerical bounds if provided
+  // 3. Validate numerical bounds if provided using extracted helpers
   if (price !== undefined) {
-    if (typeof price !== 'number' || price < 0) {
-      throw new AppError('Price must be greater than or equal to 0', 400);
-    }
+    validatePrice(price);
   }
   if (quantity !== undefined) {
-    if (typeof quantity !== 'number' || quantity < 0) {
-      throw new AppError('Quantity must be greater than or equal to 0', 400);
-    }
+    validateQuantity(quantity);
   }
 
   // 4. Find the vehicle
@@ -133,12 +133,13 @@ const updateVehicle = async (id, updateData) => {
     throw new AppError('Vehicle not found', 404);
   }
 
-  // 5. Apply partial updates
-  if (make !== undefined) vehicle.make = make;
-  if (model !== undefined) vehicle.model = model;
-  if (category !== undefined) vehicle.category = category;
-  if (price !== undefined) vehicle.price = price;
-  if (quantity !== undefined) vehicle.quantity = quantity;
+  // 5. Apply partial updates dynamically
+  const allowedUpdates = ['make', 'model', 'category', 'price', 'quantity'];
+  allowedUpdates.forEach((field) => {
+    if (updateData[field] !== undefined) {
+      vehicle[field] = updateData[field];
+    }
+  });
 
   await vehicle.save();
 
