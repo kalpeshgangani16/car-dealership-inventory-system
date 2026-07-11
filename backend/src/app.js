@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const routes = require('./routes/index');
 const authRoutes = require('./routes/authRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/', routes);
 app.use('/api/auth', authRoutes);
+app.use('/api/vehicles', vehicleRoutes);
 
 // Centralized error handling middlewares
 app.use(notFound);
