@@ -1,19 +1,65 @@
-# Car Dealership Inventory System
+# Backend Test Report
 
-## Work in Progress
+## Project
+Car Dealership Inventory System
 
-### Completed Features
+## Testing Framework
+- Jest
+- Supertest
 
-- Express backend setup
-- React frontend setup
-- MongoDB Atlas connection
+## Current Test Summary
+
+Test Suites: 3 passed
+Tests: 13 passed
+Status: All tests passing
+
+## Implemented Features
+
+### API Health Check
+- GET /
+
+### Authentication
 - User Registration
 - User Login
-- JWT Authentication
-- Jest & Supertest testing
 
-### Testing
+## Current Test Cases
 
-Backend test report:
+### app.test.js
+- API health check returns success response
 
-backend/reports/test-report.md
+### register.test.js
+- Register user successfully
+- Reject duplicate email
+- Reject invalid email
+- Reject missing name
+- Reject missing email
+- Reject missing password
+
+### login.test.js
+- Login successfully
+- Reject invalid email
+- Reject incorrect password
+- Reject unknown email
+- Reject missing email
+- Reject missing password
+- Reject invalid email format
+
+## TDD Progress
+
+Completed TDD Cycles:
+- User Registration (RED → GREEN → REFACTOR)
+- User Login (RED → GREEN → REFACTOR)
+
+## Upcoming Features
+
+- JWT Authentication Middleware
+- Vehicle CRUD
+- Vehicle Search
+- Purchase Vehicle
+- Restock Vehicle
+- Role-based Authorization
+- Frontend Integration
+
+## Notes
+
+This report is updated after every completed TDD cycle and reflects the current backend test coverage.
