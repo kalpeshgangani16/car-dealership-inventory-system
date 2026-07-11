@@ -2,20 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const AppError = require('../utils/AppError');
-
-/**
- * Validates registration parameters and email structure format
- */
-const validateRegistrationInput = (name, email, password) => {
-  if (!name || !email || !password) {
-    throw new AppError('Name, email, and password are required', 400);
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    throw new AppError('Invalid email format', 400);
-  }
-};
+const { validateRegistrationInput, validateLoginInput } = require('../utils/validation');
 
 /**
  * Generates a signed JWT session token
@@ -68,20 +55,6 @@ const register = async (userData) => {
       role: newUser.role
     }
   };
-};
-
-/**
- * Validates login parameters and format
- */
-const validateLoginInput = (email, password) => {
-  if (!email || !password) {
-    throw new AppError('Email and password are required', 400);
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    throw new AppError('Invalid email format', 400);
-  }
 };
 
 /**
