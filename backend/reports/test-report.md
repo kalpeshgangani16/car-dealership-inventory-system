@@ -9,8 +9,8 @@ Car Dealership Inventory System
 
 ## Current Test Summary
 
-- Test Suites: 8 passed, 8 total
-- Tests: 50 passed, 50 total
+- Test Suites: 10 passed, 10 total
+- Tests: 70 passed, 70 total
 - Snapshots: 0 total
 - Status: All tests passing
 
@@ -24,6 +24,8 @@ Car Dealership Inventory System
 - Vehicle Search
 - Vehicle Update
 - Vehicle Delete
+- Purchase Vehicle
+- Restock Vehicle
 
 ## Current Test Cases
 
@@ -94,6 +96,32 @@ Car Dealership Inventory System
 - Missing JWT token
 - Invalid JWT token
 
+### purchaseVehicle.test.js
+- Successfully purchase one vehicle
+- Successfully purchase multiple vehicles
+- Quantity decreases correctly
+- Vehicle not found
+- Invalid MongoDB ObjectId
+- Missing purchase quantity
+- Purchase quantity is zero
+- Purchase quantity is negative
+- Purchase quantity exceeds available stock
+- Vehicle already out of stock
+- Missing JWT token
+- Invalid JWT token
+
+### restockVehicle.test.js
+- Successfully restock one vehicle
+- Successfully restock multiple vehicles
+- Quantity increases correctly
+- Vehicle not found
+- Invalid MongoDB ObjectId
+- Missing restock quantity
+- Restock quantity is zero
+- Restock quantity is negative
+- Missing JWT token
+- Invalid JWT token
+
 ## Current TDD Progress
 
 Completed TDD Cycles
@@ -112,14 +140,18 @@ Completed TDD Cycles
 
 ✅ Vehicle Delete (RED → GREEN → REFACTOR)
 
-## Upcoming Features
+✅ Purchase Vehicle (RED → GREEN → REFACTOR)
 
-### Remaining Backend Features
-- Purchase Vehicle
-- Restock Vehicle
+✅ Restock Vehicle (RED → GREEN → REFACTOR)
 
-### Remaining Frontend
+## Next Phase
+
 - React Frontend Integration
+- UI Testing
+- Deployment
+- CI/CD Pipeline
+- API Documentation
+- Project Demonstration
 
 ## Notes
 
