@@ -6,7 +6,7 @@ const {
   validateVehicleInput,
   validatePrice,
   validateQuantity,
-  validatePurchaseQuantity,
+  validatePositiveQuantity,
   validateStockAvailability
 } = require('../utils/vehicleValidation');
 
@@ -186,8 +186,8 @@ const purchaseVehicle = async (id, purchaseData) => {
 
   const { quantity } = purchaseData;
 
-  // 2. Validate purchase quantity
-  validatePurchaseQuantity(quantity);
+  // 2. Validate purchase quantity format and bounds using generic validator
+  validatePositiveQuantity(quantity, 'Purchase');
 
   // 3. Find the vehicle or throw 404
   const vehicle = await getVehicleOrThrow(id);
@@ -215,23 +215,13 @@ const restockVehicle = async (id, restockData) => {
 
   const { quantity } = restockData;
 
-  // 2. Validate missing restock quantity
-  if (quantity === undefined || quantity === null) {
-    throw new AppError('Restock quantity is required', 400);
-  }
+  // 2. Validate restock quantity format and bounds using generic validator
+  validatePositiveQuantity(quantity, 'Restock');
 
-  // 3. Validate type and integer bounds
-  if (typeof quantity !== 'number' || quantity < 0) {
-    throw new AppError('Quantity must be greater than 0', 400);
-  }
-  if (quantity === 0) {
-    throw new AppError('Quantity cannot be 0', 400);
-  }
-
-  // 4. Find the vehicle or throw 404
+  // 3. Find the vehicle or throw 404
   const vehicle = await getVehicleOrThrow(id);
 
-  // 5. Perform restock
+  // 4. Perform restock
   vehicle.quantity += quantity;
   await vehicle.save();
 

@@ -29,11 +29,11 @@ const validateQuantity = (quantity) => {
 };
 
 /**
- * Validates purchase quantity (must be a positive number greater than 0)
+ * Validates that a quantity value is a valid positive integer greater than 0
  */
-const validatePurchaseQuantity = (quantity) => {
+const validatePositiveQuantity = (quantity, fieldName) => {
   if (quantity === undefined || quantity === null) {
-    throw new AppError('Purchase quantity is required', 400);
+    throw new AppError(`${fieldName} quantity is required`, 400);
   }
   if (typeof quantity !== 'number' || quantity < 0) {
     throw new AppError('Quantity must be greater than 0', 400);
@@ -88,6 +88,6 @@ module.exports = {
   validateVehicleInput,
   validatePrice,
   validateQuantity,
-  validatePurchaseQuantity,
+  validatePositiveQuantity,
   validateStockAvailability
 };
