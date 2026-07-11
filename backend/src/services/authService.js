@@ -10,7 +10,7 @@ const { validateRegistrationInput, validateLoginInput } = require('../utils/vali
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id.toString(), role: user.role },
-    process.env.JWT_SECRET || 'supersecret',
+    process.env.JWT_SECRET,
     { expiresIn: '30d' }
   );
 };

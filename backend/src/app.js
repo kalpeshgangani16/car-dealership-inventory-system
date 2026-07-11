@@ -1,3 +1,10 @@
+// Configure dotenv immediately to load environment variables
+require('dotenv').config();
+
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is missing");
+}
+
 // Override MongoDB URI and add database connection logger for tests and dev server
 const mongoose = require('mongoose');
 
