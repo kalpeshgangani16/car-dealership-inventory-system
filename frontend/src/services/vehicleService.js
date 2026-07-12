@@ -52,3 +52,23 @@ export const deleteVehicle = async (id) => {
   const response = await api.delete(`/vehicles/${id}`);
   return response.data;
 };
+
+/**
+ * Purchases a quantity of vehicles.
+ * @param {string} id - The ID of the vehicle to purchase
+ * @param {number} quantity - The quantity to purchase
+ */
+export const purchaseVehicle = async (id, quantity) => {
+  const response = await api.patch(`/vehicles/${id}/purchase`, { quantity });
+  return response.data;
+};
+
+/**
+ * Restocks a quantity of vehicles (Admin only).
+ * @param {string} id - The ID of the vehicle to restock
+ * @param {number} quantity - The quantity to restock
+ */
+export const restockVehicle = async (id, quantity) => {
+  const response = await api.patch(`/vehicles/${id}/restock`, { quantity });
+  return response.data;
+};

@@ -5,7 +5,7 @@ import React from 'react';
  * (e.g. price currency format, truncated MongoDB ID), and determines
  * the availability badges and purchase button states.
  */
-const VehicleCard = ({ vehicle, isAdmin, onEdit, onDelete }) => {
+const VehicleCard = ({ vehicle, isAdmin, onEdit, onDelete, onPurchase, onRestock }) => {
   const { _id, make, model, category, price, quantity } = vehicle;
 
   // Determine stock status and badge colors
@@ -56,13 +56,32 @@ const VehicleCard = ({ vehicle, isAdmin, onEdit, onDelete }) => {
               </span>
             </div>
 
-            {quantity > 0 ? (
-              <button className="btn btn-outline-primary w-100 fw-semibold">
-                Purchase
-              </button>
+            {isAdmin ? (
+              <div className="d-flex gap-2">
+                <button 
+                  type="button"
+                  className="btn btn-outline-primary btn-sm fw-semibold flex-grow-1"
+                  onClick={() => onPurchase(vehicle)}
+                  disabled={quantity === 0}
+                >
+                  {quantity === 0 ? 'Out of Stock' : 'Purchase'}
+                </button>
+                <button 
+                  type="button"
+                  className="btn btn-primary btn-sm fw-semibold flex-grow-1"
+                  onClick={() => onRestock(vehicle)}
+                >
+                  Restock
+                </button>
+              </div>
             ) : (
-              <button className="btn btn-secondary w-100 fw-semibold disabled" disabled>
-                Out of Stock
+              <button 
+                type="button"
+                className="btn btn-outline-primary w-100 fw-semibold"
+                onClick={() => onPurchase(vehicle)}
+                disabled={quantity === 0}
+              >
+                {quantity === 0 ? 'Out of Stock' : 'Purchase'}
               </button>
             )}
 

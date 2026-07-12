@@ -5,17 +5,19 @@ import {
   searchVehicles,
   createVehicle,
   updateVehicle,
-  deleteVehicle 
+  deleteVehicle,
+  purchaseVehicle,
+  restockVehicle
 } from '../services/vehicleService';
 import VehicleCard from '../components/VehicleCard';
 import VehicleFormModal from '../components/VehicleFormModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import QuantityModal from '../components/QuantityModal';
 
 /**
  * DashboardPage displays the main vehicle catalog.
- * If the authenticated user is an administrator (role === 'admin'),
- * it renders the Add, Edit, and Delete actions, coordinates the corresponding
- * modals, and handles automatic list refresh on change operations.
+ * It renders search/filtering forms, binds purchase clicks for all users,
+ * and mounts create, update, delete, and restock actions for admins.
  */
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -37,6 +39,11 @@ const DashboardPage = () => {
   const [formVehicle, setFormVehicle] = useState(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteVehicleTarget, setDeleteVehicleTarget] = useState(null);
+
+  // Quantity modal controls (Purchase & Restock)
+  const [isQtyOpen, setIsQtyOpen] = useState(false);
+  const [qtyVehicle, setQtyVehicle] = useState(null);
+  const [qtyAction, setQtyAction] = useState('purchase'); // 'purchase' or 'restock'
 
   // Status alerts
   const [successAlert, setSuccessAlert] = useState('');
@@ -114,6 +121,20 @@ const DashboardPage = () => {
     setIsDeleteOpen(true);
   };
 
+  // Trigger Purchase Modal
+  const handlePurchaseClick = (vehicle) => {
+    setQtyVehicle(vehicle);
+    setQtyAction('purchase');
+    setIsQtyOpen(true);
+  };
+
+  // Trigger Restock Modal
+  const handleRestockClick = (vehicle) => {
+    setQtyVehicle(vehicle);
+    setQtyAction('restock');
+    setIsQtyOpen(true);
+  };
+
   // Create or Update Vehicle handler passed to VehicleFormModal
   const handleSaveVehicle = async (vehicleData) => {
     try {
@@ -145,6 +166,26 @@ const DashboardPage = () => {
       return { success: true };
     } catch (err) {
       const msg = err.response?.data?.message || 'Failed to delete vehicle.';
+      return { success: false, error: msg };
+    }
+  };
+
+  // Purchase/Restock quantity confirm handler passed to QuantityModal
+  const handleQuantityConfirm = async (id, quantity) => {
+    try {
+      if (qtyAction === 'purchase') {
+        await purchaseVehicle(id, quantity);
+        triggerSuccessAlert('Vehicle purchased successfully!');
+      } else {
+        await restockVehicle(id, quantity);
+        triggerSuccessAlert('Vehicle restocked successfully!');
+      }
+      setIsQtyOpen(false);
+      fetchAll(); // Refresh inventory list to auto-update badges & button states
+      return { success: true };
+    } catch (err) {
+      // Return exact backend validation message returned by the API
+      const msg = err.response?.data?.message || `Failed to perform ${qtyAction} operation.`;
       return { success: false, error: msg };
     }
   };
@@ -301,6 +342,8 @@ const DashboardPage = () => {
               isAdmin={isAdmin}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              onPurchase={handlePurchaseClick}
+              onRestock={handleRestockClick}
             />
           ))}
         </div>
@@ -319,6 +362,15 @@ const DashboardPage = () => {
         onClose={() => setIsDeleteOpen(false)} 
         onConfirm={handleDeleteConfirm} 
         vehicle={deleteVehicleTarget} 
+      />
+
+      {/* Quantity Modal (Purchase & Restock) */}
+      <QuantityModal 
+        isOpen={isQtyOpen} 
+        onClose={() => setIsQtyOpen(false)} 
+        onConfirm={handleQuantityConfirm} 
+        vehicle={qtyVehicle} 
+        action={qtyAction} 
       />
     </div>
   );
