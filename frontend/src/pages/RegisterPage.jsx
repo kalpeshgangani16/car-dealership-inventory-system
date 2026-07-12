@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/api';
+import { FaUserPlus } from 'react-icons/fa';
 
 /**
  * RegisterPage handles new user account creation, displays errors/success,
@@ -113,7 +114,10 @@ const RegisterPage = () => {
               <span>Registering...</span>
             </>
           ) : (
-            'Register'
+            <>
+              <FaUserPlus />
+              <span>Register</span>
+            </>
           )}
         </button>
       </form>

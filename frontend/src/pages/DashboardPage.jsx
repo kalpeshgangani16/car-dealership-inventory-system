@@ -13,6 +13,7 @@ import VehicleCard from '../components/VehicleCard';
 import VehicleFormModal from '../components/VehicleFormModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import QuantityModal from '../components/QuantityModal';
+import { FaPlus, FaSearch, FaUndo } from 'react-icons/fa';
 
 /**
  * DashboardPage displays the main vehicle catalog.
@@ -211,10 +212,11 @@ const DashboardPage = () => {
         {isAdmin && (
           <button 
             type="button" 
-            className="btn btn-primary px-4 fw-semibold shadow-sm"
+            className="btn btn-primary px-4 fw-semibold shadow-sm d-flex align-items-center justify-content-center gap-2"
             onClick={handleAddClick}
           >
-            + Add Vehicle
+            <FaPlus />
+            <span>Add Vehicle</span>
           </button>
         )}
       </div>
@@ -291,18 +293,20 @@ const DashboardPage = () => {
             <div className="d-flex justify-content-end gap-2 mt-4">
               <button
                 type="button"
-                className="btn btn-outline-secondary btn-sm px-3 fw-semibold"
+                className="btn btn-outline-secondary btn-sm px-3 fw-semibold d-flex align-items-center justify-content-center gap-2"
                 onClick={handleClear}
                 disabled={loading}
               >
-                Clear Filters
+                <FaUndo />
+                <span>Clear Filters</span>
               </button>
               <button
                 type="submit"
-                className="btn btn-primary btn-sm px-4 fw-semibold"
+                className="btn btn-primary btn-sm px-4 fw-semibold d-flex align-items-center justify-content-center gap-2"
                 disabled={loading}
               >
-                Search
+                <FaSearch />
+                <span>Search</span>
               </button>
             </div>
           </form>

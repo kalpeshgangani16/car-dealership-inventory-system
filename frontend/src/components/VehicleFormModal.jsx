@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaPlus, FaEdit } from 'react-icons/fa';
 
 /**
  * VehicleFormModal renders a modal dialog for adding a new vehicle or editing
@@ -203,7 +204,17 @@ const VehicleFormModal = ({ isOpen, onClose, onSave, vehicle }) => {
                       <span>{isEdit ? 'Updating...' : 'Saving...'}</span>
                     </>
                   ) : (
-                    isEdit ? 'Update Vehicle' : 'Save Vehicle'
+                    isEdit ? (
+                      <>
+                        <FaEdit />
+                        <span>Update Vehicle</span>
+                      </>
+                    ) : (
+                      <>
+                        <FaPlus />
+                        <span>Save Vehicle</span>
+                      </>
+                    )
                   )}
                 </button>
               </div>

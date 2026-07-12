@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaTrash } from 'react-icons/fa';
 
 /**
  * DeleteConfirmModal presents a verification modal prior to vehicle deletion.
@@ -73,7 +74,10 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, vehicle }) => {
                     <span>Deleting...</span>
                   </>
                 ) : (
-                  'Delete'
+                  <>
+                    <FaTrash />
+                    <span>Delete</span>
+                  </>
                 )}
               </button>
             </div>

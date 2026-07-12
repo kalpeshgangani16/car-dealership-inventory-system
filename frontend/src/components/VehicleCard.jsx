@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaShoppingCart, FaBoxes, FaEdit, FaTrash } from 'react-icons/fa';
 
 /**
  * VehicleCard renders a single car's details, handles display formatting
@@ -60,28 +61,43 @@ const VehicleCard = ({ vehicle, isAdmin, onEdit, onDelete, onPurchase, onRestock
               <div className="d-flex gap-2">
                 <button 
                   type="button"
-                  className="btn btn-outline-primary btn-sm fw-semibold flex-grow-1"
+                  className="btn btn-outline-primary btn-sm fw-semibold flex-grow-1 d-flex align-items-center justify-content-center gap-2"
                   onClick={() => onPurchase(vehicle)}
                   disabled={quantity === 0}
                 >
-                  {quantity === 0 ? 'Out of Stock' : 'Purchase'}
+                  {quantity === 0 ? (
+                    'Out of Stock'
+                  ) : (
+                    <>
+                      <FaShoppingCart />
+                      <span>Purchase</span>
+                    </>
+                  )}
                 </button>
                 <button 
                   type="button"
-                  className="btn btn-primary btn-sm fw-semibold flex-grow-1"
+                  className="btn btn-primary btn-sm fw-semibold flex-grow-1 d-flex align-items-center justify-content-center gap-2"
                   onClick={() => onRestock(vehicle)}
                 >
-                  Restock
+                  <FaBoxes />
+                  <span>Restock</span>
                 </button>
               </div>
             ) : (
               <button 
                 type="button"
-                className="btn btn-outline-primary w-100 fw-semibold"
+                className="btn btn-outline-primary w-100 fw-semibold d-flex align-items-center justify-content-center gap-2"
                 onClick={() => onPurchase(vehicle)}
                 disabled={quantity === 0}
               >
-                {quantity === 0 ? 'Out of Stock' : 'Purchase'}
+                {quantity === 0 ? (
+                  'Out of Stock'
+                ) : (
+                  <>
+                    <FaShoppingCart />
+                    <span>Purchase</span>
+                  </>
+                )}
               </button>
             )}
 
@@ -89,17 +105,19 @@ const VehicleCard = ({ vehicle, isAdmin, onEdit, onDelete, onPurchase, onRestock
               <div className="d-flex gap-2 mt-3 pt-3 border-top">
                 <button
                   type="button"
-                  className="btn btn-outline-warning btn-sm fw-semibold flex-grow-1"
+                  className="btn btn-outline-warning btn-sm fw-semibold flex-grow-1 d-flex align-items-center justify-content-center gap-2"
                   onClick={() => onEdit(vehicle)}
                 >
-                  Edit
+                  <FaEdit />
+                  <span>Edit</span>
                 </button>
                 <button
                   type="button"
-                  className="btn btn-outline-danger btn-sm fw-semibold flex-grow-1"
+                  className="btn btn-outline-danger btn-sm fw-semibold flex-grow-1 d-flex align-items-center justify-content-center gap-2"
                   onClick={() => onDelete(vehicle)}
                 >
-                  Delete
+                  <FaTrash />
+                  <span>Delete</span>
                 </button>
               </div>
             )}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaShoppingCart, FaBoxes } from 'react-icons/fa';
 
 /**
  * QuantityModal renders a modal dialog requesting a purchase or restock quantity.
@@ -124,7 +125,17 @@ const QuantityModal = ({ isOpen, onClose, onConfirm, vehicle, action }) => {
                       <span>{isPurchase ? 'Purchasing...' : 'Restocking...'}</span>
                     </>
                   ) : (
-                    isPurchase ? 'Purchase' : 'Restock'
+                    isPurchase ? (
+                      <>
+                        <FaShoppingCart />
+                        <span>Purchase</span>
+                      </>
+                    ) : (
+                      <>
+                        <FaBoxes />
+                        <span>Restock</span>
+                      </>
+                    )
                   )}
                 </button>
               </div>

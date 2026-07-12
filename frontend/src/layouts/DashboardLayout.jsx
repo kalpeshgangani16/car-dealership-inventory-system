@@ -1,6 +1,6 @@
 import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaCar } from 'react-icons/fa';
+import { FaSignOutAlt } from 'react-icons/fa';
 
 /**
  * Standard layout for the authenticated space, providing navigation,
@@ -17,8 +17,8 @@ const DashboardLayout = () => {
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div className="container">
           <Link className="navbar-brand fw-bold d-flex align-items-center" to="/dashboard">
-            <FaCar className="me-2 text-warning" />
-            CarHub Inventory
+            <span className="me-2">🚗</span>
+            Car Dealership Inventory
           </Link>
           <button
             className="navbar-toggler"
@@ -38,8 +38,9 @@ const DashboardLayout = () => {
                 <span className="text-white">
                   Logged in as: <strong className="text-warning">{user.name}</strong> <span className="badge bg-secondary text-capitalize ms-1">{user.role}</span>
                 </span>
-                <button className="btn btn-outline-light btn-sm" onClick={logout}>
-                  Logout
+                <button className="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center gap-2" onClick={logout}>
+                  <FaSignOutAlt />
+                  <span>Logout</span>
                 </button>
               </div>
             )}
@@ -52,7 +53,7 @@ const DashboardLayout = () => {
       </main>
 
       <footer className="bg-white border-top py-3 text-center text-muted mt-auto">
-        <small>&copy; {new Date().getFullYear()} CarHub Inventory</small>
+        <small>&copy; {new Date().getFullYear()} Car Dealership Inventory System</small>
       </footer>
     </div>
   );
