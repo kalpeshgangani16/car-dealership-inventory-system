@@ -1,13 +1,26 @@
 import { useEffect, useState } from 'react';
-import { getAllVehicles, searchVehicles } from '../services/vehicleService';
+import { useAuth } from '../context/AuthContext';
+import { 
+  getAllVehicles, 
+  searchVehicles,
+  createVehicle,
+  updateVehicle,
+  deleteVehicle 
+} from '../services/vehicleService';
 import VehicleCard from '../components/VehicleCard';
+import VehicleFormModal from '../components/VehicleFormModal';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 /**
- * DashboardPage displays the Vehicle Inventory header, search/filtering options,
- * and lists matching vehicles using the VehicleCard component. It coordinates
- * loading states, empty search fallbacks, and backend API error display.
+ * DashboardPage displays the main vehicle catalog.
+ * If the authenticated user is an administrator (role === 'admin'),
+ * it renders the Add, Edit, and Delete actions, coordinates the corresponding
+ * modals, and handles automatic list refresh on change operations.
  */
 const DashboardPage = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -19,13 +32,21 @@ const DashboardPage = () => {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
+  // Modal controls
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [formVehicle, setFormVehicle] = useState(null);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteVehicleTarget, setDeleteVehicleTarget] = useState(null);
+
+  // Status alerts
+  const [successAlert, setSuccessAlert] = useState('');
+
   // Fetch all vehicles
   const fetchAll = async () => {
     setLoading(true);
     setError('');
     try {
       const data = await getAllVehicles();
-      // Support raw arrays or wrapped responses e.g. { vehicles: [...] }
       setVehicles(data.vehicles || data);
     } catch (err) {
       const msg = err.response?.data?.message || 'Failed to fetch vehicles. Please try again.';
@@ -38,6 +59,15 @@ const DashboardPage = () => {
   useEffect(() => {
     fetchAll();
   }, []);
+
+  // Display success message and auto-dismiss
+  const triggerSuccessAlert = (message) => {
+    setSuccessAlert(message);
+    const timer = setTimeout(() => {
+      setSuccessAlert('');
+    }, 4000);
+    return () => clearTimeout(timer);
+  };
 
   // Submit filters
   const handleSearch = async (e) => {
@@ -66,11 +96,86 @@ const DashboardPage = () => {
     fetchAll();
   };
 
+  // Trigger Add Modal
+  const handleAddClick = () => {
+    setFormVehicle(null);
+    setIsFormOpen(true);
+  };
+
+  // Trigger Edit Modal
+  const handleEditClick = (vehicle) => {
+    setFormVehicle(vehicle);
+    setIsFormOpen(true);
+  };
+
+  // Trigger Delete Confirmation Modal
+  const handleDeleteClick = (vehicle) => {
+    setDeleteVehicleTarget(vehicle);
+    setIsDeleteOpen(true);
+  };
+
+  // Create or Update Vehicle handler passed to VehicleFormModal
+  const handleSaveVehicle = async (vehicleData) => {
+    try {
+      if (formVehicle) {
+        // Edit mode
+        await updateVehicle(formVehicle._id, vehicleData);
+        triggerSuccessAlert('Vehicle updated successfully!');
+      } else {
+        // Add mode
+        await createVehicle(vehicleData);
+        triggerSuccessAlert('Vehicle added successfully!');
+      }
+      setIsFormOpen(false);
+      fetchAll(); // Refresh inventory list
+      return { success: true };
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to save vehicle details.';
+      return { success: false, error: msg };
+    }
+  };
+
+  // Delete vehicle handler passed to DeleteConfirmModal
+  const handleDeleteConfirm = async (id) => {
+    try {
+      await deleteVehicle(id);
+      triggerSuccessAlert('Vehicle deleted successfully!');
+      setIsDeleteOpen(false);
+      fetchAll(); // Refresh inventory list
+      return { success: true };
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to delete vehicle.';
+      return { success: false, error: msg };
+    }
+  };
+
   return (
     <div className="container py-2">
-      {/* Title Header */}
+      {/* Success Banner */}
+      {successAlert && (
+        <div className="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+          <strong>Success!</strong> {successAlert}
+          <button 
+            type="button" 
+            className="btn-close" 
+            aria-label="Close"
+            onClick={() => setSuccessAlert('')}
+          ></button>
+        </div>
+      )}
+
+      {/* Title Header and Admin Action */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="fw-bold text-dark mb-0">Vehicle Inventory</h2>
+        {isAdmin && (
+          <button 
+            type="button" 
+            className="btn btn-primary px-4 fw-semibold shadow-sm"
+            onClick={handleAddClick}
+          >
+            + Add Vehicle
+          </button>
+        )}
       </div>
 
       {/* Filter Options Panel */}
@@ -190,10 +295,31 @@ const DashboardPage = () => {
       ) : (
         <div className="row">
           {vehicles.map((vehicle) => (
-            <VehicleCard key={vehicle._id} vehicle={vehicle} />
+            <VehicleCard 
+              key={vehicle._id} 
+              vehicle={vehicle} 
+              isAdmin={isAdmin}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
+            />
           ))}
         </div>
       )}
+
+      {/* Admin Modals */}
+      <VehicleFormModal 
+        isOpen={isFormOpen} 
+        onClose={() => setIsFormOpen(false)} 
+        onSave={handleSaveVehicle} 
+        vehicle={formVehicle} 
+      />
+
+      <DeleteConfirmModal 
+        isOpen={isDeleteOpen} 
+        onClose={() => setIsDeleteOpen(false)} 
+        onConfirm={handleDeleteConfirm} 
+        vehicle={deleteVehicleTarget} 
+      />
     </div>
   );
 };

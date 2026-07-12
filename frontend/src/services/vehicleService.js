@@ -24,3 +24,31 @@ export const searchVehicles = async (filters) => {
   const response = await api.get('/vehicles/search', { params });
   return response.data;
 };
+
+/**
+ * Creates a new vehicle in the inventory (Admin only).
+ * @param {Object} vehicleData - The vehicle information (make, model, category, price, quantity)
+ */
+export const createVehicle = async (vehicleData) => {
+  const response = await api.post('/vehicles', vehicleData);
+  return response.data;
+};
+
+/**
+ * Updates an existing vehicle's details (Admin only).
+ * @param {string} id - The ID of the vehicle to update
+ * @param {Object} vehicleData - The updated vehicle information
+ */
+export const updateVehicle = async (id, vehicleData) => {
+  const response = await api.put(`/vehicles/${id}`, vehicleData);
+  return response.data;
+};
+
+/**
+ * Deletes a vehicle from the catalog (Admin only).
+ * @param {string} id - The ID of the vehicle to delete
+ */
+export const deleteVehicle = async (id) => {
+  const response = await api.delete(`/vehicles/${id}`);
+  return response.data;
+};

@@ -5,7 +5,7 @@ import React from 'react';
  * (e.g. price currency format, truncated MongoDB ID), and determines
  * the availability badges and purchase button states.
  */
-const VehicleCard = ({ vehicle }) => {
+const VehicleCard = ({ vehicle, isAdmin, onEdit, onDelete }) => {
   const { _id, make, model, category, price, quantity } = vehicle;
 
   // Determine stock status and badge colors
@@ -64,6 +64,25 @@ const VehicleCard = ({ vehicle }) => {
               <button className="btn btn-secondary w-100 fw-semibold disabled" disabled>
                 Out of Stock
               </button>
+            )}
+
+            {isAdmin && (
+              <div className="d-flex gap-2 mt-3 pt-3 border-top">
+                <button
+                  type="button"
+                  className="btn btn-outline-warning btn-sm fw-semibold flex-grow-1"
+                  onClick={() => onEdit(vehicle)}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-danger btn-sm fw-semibold flex-grow-1"
+                  onClick={() => onDelete(vehicle)}
+                >
+                  Delete
+                </button>
+              </div>
             )}
           </div>
 
