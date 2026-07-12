@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const vehicleController = require('../controllers/vehicleController');
 const { protect } = require('../middleware/authMiddleware');
+const { adminOnly } = require('../middleware/adminMiddleware');
 
 /**
  * @route   POST /api/vehicles
@@ -36,7 +37,7 @@ router.put('/:id', protect, vehicleController.updateVehicle);
  * @desc    Delete an existing vehicle
  * @access  Private
  */
-router.delete('/:id', protect, vehicleController.deleteVehicle);
+router.delete('/:id', protect, adminOnly, vehicleController.deleteVehicle);
 
 /**
  * @route   PATCH /api/vehicles/:id/purchase
@@ -50,6 +51,6 @@ router.patch('/:id/purchase', protect, vehicleController.purchaseVehicle);
  * @desc    Restock an existing vehicle
  * @access  Private
  */
-router.patch('/:id/restock', protect, vehicleController.restockVehicle);
+router.patch('/:id/restock', protect, adminOnly, vehicleController.restockVehicle);
 
 module.exports = router;

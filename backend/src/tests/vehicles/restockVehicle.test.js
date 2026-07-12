@@ -203,4 +203,34 @@ describe('Restock Vehicle Integration Tests (PATCH /api/vehicles/:id/restock)', 
     expect(response.status).toBe(401);
   });
 
+  /**
+   * Asserts that requesting with a normal user JWT returns 403.
+   */
+  it('should return a 403 status if the user is not an admin', async () => {
+    const normalUserEmail = 'normal-restocker@test.com';
+    const hashedPassword = await bcrypt.hash('password123', 10);
+    await User.create({
+      name: 'Normal Restocker',
+      email: normalUserEmail,
+      password: hashedPassword,
+      role: 'user'
+    });
+
+    const loginResponse = await request(app)
+      .post('/api/auth/login')
+      .send({ email: normalUserEmail, password: 'password123' });
+
+    const normalToken = loginResponse.body.token;
+
+    const response = await request(app)
+      .patch(`/api/vehicles/${testVehicle._id}/restock`)
+      .set('Authorization', `Bearer ${normalToken}`)
+      .send({ quantity: 1 });
+
+    expect(response.status).toBe(403);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe('Access denied: Admins only');
+  });
+
 });
+
